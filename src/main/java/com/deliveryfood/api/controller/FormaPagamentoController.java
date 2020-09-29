@@ -1,10 +1,12 @@
 package com.deliveryfood.api.controller;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,15 +36,23 @@ public class FormaPagamentoController {
 	private FormaPagamentoConverter formaPagamentoConverter;
 
 	@GetMapping
-	public List<FormaPagamentoModel> findAll() {
+	public ResponseEntity<List<FormaPagamentoModel>> findAll() {
 
-		return formaPagamentoConverter.toCollectionModel(formaPagamentoService.findAll());
+		List<FormaPagamentoModel> formasPagamentosModel = formaPagamentoConverter
+				.toCollectionModel(formaPagamentoService.findAll());
+
+		return ResponseEntity.ok().cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS)).body(formasPagamentosModel);
 	}
 
 	@GetMapping("/{formaPagamentoId}")
-	public FormaPagamentoModel findById(@PathVariable Long formaPagamentoId) {
+	public ResponseEntity<FormaPagamentoModel> findById(@PathVariable Long formaPagamentoId) {
 
-		return formaPagamentoConverter.toModel(formaPagamentoService.findById(formaPagamentoId));
+		FormaPagamentoModel formaPagamentoModel = formaPagamentoConverter
+				.toModel(formaPagamentoService.findById(formaPagamentoId));
+		
+		return ResponseEntity.ok()
+				.cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
+				.body(formaPagamentoModel);
 	}
 
 	@PostMapping
