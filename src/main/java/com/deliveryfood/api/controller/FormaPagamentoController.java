@@ -1,5 +1,6 @@
 package com.deliveryfood.api.controller;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -18,11 +19,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import com.deliveryfood.api.converter.FormaPagamentoConverter;
 import com.deliveryfood.api.model.FormaPagamentoModel;
 import com.deliveryfood.api.model.input.FormaPagamentoInput;
 import com.deliveryfood.domain.model.FormaPagamento;
+import com.deliveryfood.domain.repository.FormaPagamentoRepository;
 import com.deliveryfood.domain.service.FormaPagamentoService;
 
 @RestController
@@ -31,17 +35,30 @@ public class FormaPagamentoController {
 
 	@Autowired
 	private FormaPagamentoService formaPagamentoService;
+	
+	@Autowired
+	private FormaPagamentoRepository formaPagamentoRepository;
 
 	@Autowired
 	private FormaPagamentoConverter formaPagamentoConverter;
 
 	@GetMapping
-	public ResponseEntity<List<FormaPagamentoModel>> findAll() {
-
+	public ResponseEntity<List<FormaPagamentoModel>> findAll(ServletWebRequest request) {
+		ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
+		
+		String eTag = gerarEtag();
+		
+		if(request.checkNotModified(eTag)) {
+			return null;
+		}
+		
 		List<FormaPagamentoModel> formasPagamentosModel = formaPagamentoConverter
 				.toCollectionModel(formaPagamentoService.findAll());
 
-		return ResponseEntity.ok().cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS)).body(formasPagamentosModel);
+		return ResponseEntity.ok()
+				.cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
+				.eTag(eTag)
+				.body(formasPagamentosModel);
 	}
 
 	@GetMapping("/{formaPagamentoId}")
@@ -81,5 +98,18 @@ public class FormaPagamentoController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable Long formaPagamentoId) {
 		formaPagamentoService.delete(formaPagamentoId);
+	}
+	
+	private String gerarEtag() {
+		String eTag = "0";
+		OffsetDateTime dataUltimaAtualizacao = formaPagamentoRepository.getDataUltimaAtualizacao();
+		
+		System.out.println(dataUltimaAtualizacao);
+		
+		if(dataUltimaAtualizacao != null) {
+			eTag = String.valueOf(dataUltimaAtualizacao.toEpochSecond());
+		}
+		
+		return eTag;
 	}
 }
