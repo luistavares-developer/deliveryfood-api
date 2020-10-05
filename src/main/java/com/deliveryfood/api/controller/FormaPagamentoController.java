@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,13 +26,14 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import com.deliveryfood.api.converter.FormaPagamentoConverter;
 import com.deliveryfood.api.model.FormaPagamentoModel;
 import com.deliveryfood.api.model.input.FormaPagamentoInput;
+import com.deliveryfood.api.openapi.controller.FormaPagamentoControllerOpenApi;
 import com.deliveryfood.domain.model.FormaPagamento;
 import com.deliveryfood.domain.repository.FormaPagamentoRepository;
 import com.deliveryfood.domain.service.FormaPagamentoService;
 
 @RestController
-@RequestMapping("/formas-pagamento")
-public class FormaPagamentoController {
+@RequestMapping(path = "/formas-pagamento", produces = MediaType.APPLICATION_JSON_VALUE)
+public class FormaPagamentoController implements FormaPagamentoControllerOpenApi {
 
 	@Autowired
 	private FormaPagamentoService formaPagamentoService;
@@ -103,8 +105,6 @@ public class FormaPagamentoController {
 	private String gerarEtag() {
 		String eTag = "0";
 		OffsetDateTime dataUltimaAtualizacao = formaPagamentoRepository.getDataUltimaAtualizacao();
-		
-		System.out.println(dataUltimaAtualizacao);
 		
 		if(dataUltimaAtualizacao != null) {
 			eTag = String.valueOf(dataUltimaAtualizacao.toEpochSecond());

@@ -8,8 +8,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.deliveryfood.core.service.storage.FotoStorageService;
-import com.deliveryfood.core.service.storage.FotoStorageService.NovaFoto;
+import com.deliveryfood.core.storage.FotoStorageService;
+import com.deliveryfood.core.storage.FotoStorageService.NovaFoto;
 import com.deliveryfood.domain.exception.FotoProdutoNaoEncontradoException;
 import com.deliveryfood.domain.model.FotoProduto;
 import com.deliveryfood.domain.repository.ProdutoRepository;

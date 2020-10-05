@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-import com.deliveryfood.core.service.email.EmailService;
-import com.deliveryfood.core.service.email.EmailService.Mensagem;
+import com.deliveryfood.core.email.EmailService;
+import com.deliveryfood.core.email.EmailService.Mensagem;
 import com.deliveryfood.domain.event.PedidoCanceladoEvent;
 import com.deliveryfood.domain.model.Pedido;
 

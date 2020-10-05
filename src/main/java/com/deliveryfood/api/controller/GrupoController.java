@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,12 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.deliveryfood.api.converter.GrupoConverter;
 import com.deliveryfood.api.model.GrupoModel;
 import com.deliveryfood.api.model.input.GrupoInput;
+import com.deliveryfood.api.openapi.controller.GrupoControllerOpenApi;
 import com.deliveryfood.domain.model.Grupo;
 import com.deliveryfood.domain.service.GrupoService;
 
 @RestController
-@RequestMapping("/grupos")
-public class GrupoController {
+@RequestMapping(path = "/grupos", produces = MediaType.APPLICATION_JSON_VALUE)
+public class GrupoController implements GrupoControllerOpenApi {
 
 	@Autowired
 	private GrupoService grupoService;

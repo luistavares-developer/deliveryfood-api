@@ -6,8 +6,8 @@ import javax.validation.constraints.NotNull;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.deliveryfood.core.annotation.ContentType;
-import com.deliveryfood.core.annotation.FileSize;
+import com.deliveryfood.api.model.annotation.ContentType;
+import com.deliveryfood.api.model.annotation.FileSize;
 
 import lombok.Getter;
 import lombok.Setter;

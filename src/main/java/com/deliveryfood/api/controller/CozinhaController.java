@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,12 +25,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.deliveryfood.api.converter.CozinhaConverter;
 import com.deliveryfood.api.model.CozinhaModel;
 import com.deliveryfood.api.model.input.CozinhaInput;
+import com.deliveryfood.api.openapi.controller.CozinhaControllerOpenApi;
 import com.deliveryfood.domain.model.Cozinha;
 import com.deliveryfood.domain.service.CozinhaService;
 
 @RestController
-@RequestMapping(value = "/cozinhas")
-public class CozinhaController {
+@RequestMapping(path = "/cozinhas", produces = MediaType.APPLICATION_JSON_VALUE)
+public class CozinhaController implements CozinhaControllerOpenApi {
 
 	@Autowired
 	private CozinhaService cozinhaService;

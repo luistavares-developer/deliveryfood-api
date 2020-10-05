@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,12 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.deliveryfood.api.converter.CidadeConverter;
 import com.deliveryfood.api.model.CidadeModel;
 import com.deliveryfood.api.model.input.CidadeInput;
+import com.deliveryfood.api.openapi.controller.CidadeControllerOpenApi;
 import com.deliveryfood.domain.model.Cidade;
 import com.deliveryfood.domain.service.CidadeService;
 
 @RestController
-@RequestMapping(value = "/cidades")
-public class CidadeController {
+@RequestMapping(path = "/cidades", produces = MediaType.APPLICATION_JSON_VALUE)
+public class CidadeController implements CidadeControllerOpenApi {
 
 	@Autowired
 	private CidadeService cidadeService;
@@ -46,7 +48,7 @@ public class CidadeController {
 	}
 
 	@PostMapping
-	public ResponseEntity<?> save(@RequestBody @Valid CidadeInput cidadeInput) {
+	public ResponseEntity<CidadeModel> save(@RequestBody @Valid CidadeInput cidadeInput) {
 		
 		Cidade cidade = cidadeConverter.toDomain(cidadeInput);
 		CidadeModel novaCidade = cidadeConverter.toModel(cidadeService.save(cidade));
@@ -55,7 +57,7 @@ public class CidadeController {
 	}
 
 	@PutMapping("/{cidadeId}")
-	public ResponseEntity<?> update(@PathVariable Long cidadeId, @RequestBody @Valid CidadeInput cidadeInput) {
+	public ResponseEntity<CidadeModel> update(@PathVariable Long cidadeId, @RequestBody @Valid CidadeInput cidadeInput) {
 		
 		Cidade cidadeAtual = cidadeService.findById(cidadeId);
 		cidadeConverter.copyPropetiesToDomain(cidadeInput, cidadeAtual);

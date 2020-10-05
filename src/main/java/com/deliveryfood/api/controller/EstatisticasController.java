@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deliveryfood.core.service.PdfVendaReportService;
+import com.deliveryfood.core.report.PdfVendaReportService;
 import com.deliveryfood.domain.model.VendaDiaria;
 import com.deliveryfood.domain.repository.VendaDiariaRepository;
 import com.deliveryfood.domain.repository.filter.VendaDiariaFilter;
