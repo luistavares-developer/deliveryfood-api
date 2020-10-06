@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.deliveryfood.api.converter.FotoProdutoModelConverter;
 import com.deliveryfood.api.model.FotoProdutoModel;
 import com.deliveryfood.api.model.input.FotoProdutoInput;
+import com.deliveryfood.api.openapi.controller.RestauranteProdutoFotoControllerOpenApi;
 import com.deliveryfood.core.storage.FotoStorageService;
 import com.deliveryfood.core.storage.FotoStorageService.FotoRecuperada;
 import com.deliveryfood.domain.exception.EntidadeNaoEncontradaException;
@@ -34,8 +35,8 @@ import com.deliveryfood.domain.service.CatalogoFotoProdutoService;
 import com.deliveryfood.domain.service.ProdutoService;
 
 @RestController
-@RequestMapping("/restaurantes/{restauranteId}/produtos/{produtoId}/foto")
-public class RestauranteProdutoFotoController {
+@RequestMapping(path = "/restaurantes/{restauranteId}/produtos/{produtoId}/foto", produces = MediaType.APPLICATION_JSON_VALUE)
+public class RestauranteProdutoFotoController implements RestauranteProdutoFotoControllerOpenApi {
 
 	@Autowired
 	private ProdutoService produtoService;
@@ -49,16 +50,15 @@ public class RestauranteProdutoFotoController {
 	@Autowired
 	private CatalogoFotoProdutoService catalogoService;
 
-	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public FotoProdutoModel findDadosFoto(@PathVariable Long restauranteId,
-			@PathVariable Long produtoId) {
+	@GetMapping
+	public FotoProdutoModel findDadosFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
 		FotoProduto foto = catalogoService.findDadosFoto(restauranteId, produtoId);
 		return fotoProdutoModelConverter.toModel(foto);
 	}
 
-	@GetMapping
-	public ResponseEntity<?> findArquivoFoto(@PathVariable Long restauranteId,
-			@PathVariable Long produtoId, @RequestHeader(name = "accept") String acceptContentTypes) throws HttpMediaTypeNotAcceptableException {
+	@GetMapping(produces = MediaType.ALL_VALUE)
+	public ResponseEntity<?> findArquivoFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId,
+			@RequestHeader(name = "accept") String acceptContentTypes) throws HttpMediaTypeNotAcceptableException {
 
 		try {
 
@@ -69,15 +69,12 @@ public class RestauranteProdutoFotoController {
 			verificaCompatibilidadeContentType(contentTypeFoto, contentTypesAceitos);
 
 			FotoRecuperada fotoRecuperada = fotoStorageService.recuperar(fotoProduto.getNomeArquivo());
-			System.out.println(fotoRecuperada.getUrl());
-			if(fotoRecuperada.temUrl()) {
-				System.out.println("ENTROU");
-				return ResponseEntity
-						.status(HttpStatus.FOUND)
-						.header(HttpHeaders.LOCATION, fotoRecuperada.getUrl())
+			
+			if (fotoRecuperada.temUrl()) {
+				return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, fotoRecuperada.getUrl())
 						.build();
 			}
-			
+
 			return ResponseEntity.ok().contentType(contentTypeFoto)
 					.body(new InputStreamResource(fotoRecuperada.getInputStream()));
 
@@ -100,7 +97,7 @@ public class RestauranteProdutoFotoController {
 		return fotoSalva;
 
 	}
-	
+
 	@DeleteMapping
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable Long restauranteId, @PathVariable Long produtoId) {

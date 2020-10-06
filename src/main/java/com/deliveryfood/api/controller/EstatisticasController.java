@@ -11,14 +11,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.deliveryfood.api.openapi.controller.EstatisticasControllerOpenApi;
 import com.deliveryfood.core.report.PdfVendaReportService;
 import com.deliveryfood.domain.model.VendaDiaria;
 import com.deliveryfood.domain.repository.VendaDiariaRepository;
 import com.deliveryfood.domain.repository.filter.VendaDiariaFilter;
 
 @RestController
-@RequestMapping("/estatisticas")
-public class EstatisticasController {
+@RequestMapping(path = "/estatisticas", produces = MediaType.APPLICATION_JSON_VALUE)
+public class EstatisticasController implements EstatisticasControllerOpenApi {
 
 	@Autowired
 	private VendaDiariaRepository vendaDiariaRepository;

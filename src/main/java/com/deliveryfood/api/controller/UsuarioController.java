@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,12 +22,13 @@ import com.deliveryfood.api.model.UsuarioModel;
 import com.deliveryfood.api.model.input.SenhaInput;
 import com.deliveryfood.api.model.input.UsuarioComSenhaInput;
 import com.deliveryfood.api.model.input.UsuarioInput;
+import com.deliveryfood.api.openapi.controller.UsuarioControllerOpenApi;
 import com.deliveryfood.domain.model.Usuario;
 import com.deliveryfood.domain.service.UsuarioService;
 
 @RestController
-@RequestMapping("/usuarios")
-public class UsuarioController {
+@RequestMapping(path = "/usuarios", produces = MediaType.APPLICATION_JSON_VALUE)
+public class UsuarioController implements UsuarioControllerOpenApi {
 
 	@Autowired
 	private UsuarioService usuarioService;
