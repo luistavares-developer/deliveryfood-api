@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.deliveryfood.api.converter.CidadeConverter;
+import com.deliveryfood.api.helper.ResourceUriHelper;
 import com.deliveryfood.api.model.CidadeModel;
 import com.deliveryfood.api.model.input.CidadeInput;
 import com.deliveryfood.api.openapi.controller.CidadeControllerOpenApi;
@@ -52,6 +53,8 @@ public class CidadeController implements CidadeControllerOpenApi {
 		
 		Cidade cidade = cidadeConverter.toDomain(cidadeInput);
 		CidadeModel novaCidade = cidadeConverter.toModel(cidadeService.save(cidade));
+		
+		ResourceUriHelper.addUriInResponseHeader(novaCidade.getId());
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(novaCidade);
 	}
