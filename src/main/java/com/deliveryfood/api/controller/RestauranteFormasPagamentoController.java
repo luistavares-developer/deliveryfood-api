@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deliveryfood.api.converter.FormaPagamentoConverter;
+import com.deliveryfood.api.assembler.FormaPagamentoAssembler;
 import com.deliveryfood.api.model.FormaPagamentoModel;
 import com.deliveryfood.api.openapi.controller.RestauranteFormaPagamentoControllerOpenApi;
 import com.deliveryfood.domain.model.Restaurante;
@@ -27,7 +27,7 @@ public class RestauranteFormasPagamentoController implements RestauranteFormaPag
 	private RestauranteService restauranteService;
 
 	@Autowired
-	private FormaPagamentoConverter formaPagamentoConverter;
+	private FormaPagamentoAssembler formaPagamentoConverter;
 	
 	@GetMapping
 	public List<FormaPagamentoModel> findAll(@PathVariable Long restauranteId) {

@@ -1,10 +1,9 @@
 package com.deliveryfood.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deliveryfood.api.converter.CidadeConverter;
+import com.deliveryfood.api.assembler.CidadeAssembler;
 import com.deliveryfood.api.helper.ResourceUriHelper;
 import com.deliveryfood.api.model.CidadeModel;
 import com.deliveryfood.api.model.input.CidadeInput;
@@ -34,25 +33,25 @@ public class CidadeController implements CidadeControllerOpenApi {
 	private CidadeService cidadeService;
 
 	@Autowired
-	private CidadeConverter cidadeConverter;
+	private CidadeAssembler cidadeAssembler;
 	
 	@GetMapping
-	public List<CidadeModel> findAll() {
+	public CollectionModel<CidadeModel> findAll() {
 		
-		return cidadeConverter.toCollectionModel(cidadeService.findAll());
+		return cidadeAssembler.toCollectionModel(cidadeService.findAll());
 	}
 
 	@GetMapping("/{cidadeId}")
 	public CidadeModel findById(@PathVariable Long cidadeId) {
 		
-		return cidadeConverter.toModel(cidadeService.findById(cidadeId));
+		return cidadeAssembler.toModel(cidadeService.findById(cidadeId));
 	}
 
 	@PostMapping
 	public ResponseEntity<CidadeModel> save(@RequestBody @Valid CidadeInput cidadeInput) {
 		
-		Cidade cidade = cidadeConverter.toDomain(cidadeInput);
-		CidadeModel novaCidade = cidadeConverter.toModel(cidadeService.save(cidade));
+		Cidade cidade = cidadeAssembler.toDomain(cidadeInput);
+		CidadeModel novaCidade = cidadeAssembler.toModel(cidadeService.save(cidade));
 		
 		ResourceUriHelper.addUriInResponseHeader(novaCidade.getId());
 		
@@ -63,8 +62,8 @@ public class CidadeController implements CidadeControllerOpenApi {
 	public ResponseEntity<CidadeModel> update(@PathVariable Long cidadeId, @RequestBody @Valid CidadeInput cidadeInput) {
 		
 		Cidade cidadeAtual = cidadeService.findById(cidadeId);
-		cidadeConverter.copyPropetiesToDomain(cidadeInput, cidadeAtual);
-		CidadeModel cidadeAtualizada = cidadeConverter.toModel(cidadeService.save(cidadeAtual));
+		cidadeAssembler.copyPropetiesToDomain(cidadeInput, cidadeAtual);
+		CidadeModel cidadeAtualizada = cidadeAssembler.toModel(cidadeService.save(cidadeAtual));
 		
 		return ResponseEntity.ok(cidadeAtualizada);
 	}

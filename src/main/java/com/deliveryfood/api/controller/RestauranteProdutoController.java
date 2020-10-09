@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deliveryfood.api.converter.ProdutoConverter;
+import com.deliveryfood.api.assembler.ProdutoAssembler;
 import com.deliveryfood.api.model.ProdutoModel;
 import com.deliveryfood.api.model.input.ProdutoInput;
 import com.deliveryfood.api.openapi.controller.RestauranteProdutoControllerOpenApi;
@@ -38,7 +38,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
 	private ProdutoService produtoService;
 
 	@Autowired
-	private ProdutoConverter produtoConverter;
+	private ProdutoAssembler produtoConverter;
 
 	@GetMapping
 	public List<ProdutoModel> findAll(@PathVariable Long restauranteId, 

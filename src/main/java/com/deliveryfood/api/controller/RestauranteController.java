@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deliveryfood.api.converter.RestauranteConverter;
+import com.deliveryfood.api.assembler.RestauranteAssembler;
 import com.deliveryfood.api.model.RestauranteModel;
 import com.deliveryfood.api.model.input.RestauranteInput;
 import com.deliveryfood.api.model.view.RestauranteView;
@@ -34,7 +34,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 	private RestauranteService restauranteService;
 
 	@Autowired
-	private RestauranteConverter restauranteConverter;
+	private RestauranteAssembler restauranteConverter;
 
 	@JsonView(RestauranteView.Resumo.class)
 	@GetMapping

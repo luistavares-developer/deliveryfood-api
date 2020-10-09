@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deliveryfood.api.converter.CozinhaConverter;
+import com.deliveryfood.api.assembler.CozinhaAssembler;
 import com.deliveryfood.api.model.CozinhaModel;
 import com.deliveryfood.api.model.input.CozinhaInput;
 import com.deliveryfood.api.openapi.controller.CozinhaControllerOpenApi;
@@ -37,7 +37,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
 	private CozinhaService cozinhaService;
 	
 	@Autowired
-	private CozinhaConverter cozinhaConverter;
+	private CozinhaAssembler cozinhaConverter;
 
 	@GetMapping
 	public Page<CozinhaModel> findAll(@PageableDefault(size = 10) Pageable pageable) {

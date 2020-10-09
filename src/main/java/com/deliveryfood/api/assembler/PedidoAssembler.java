@@ -1,4 +1,4 @@
-package com.deliveryfood.api.converter;
+package com.deliveryfood.api.assembler;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,7 +12,7 @@ import com.deliveryfood.api.model.input.PedidoInput;
 import com.deliveryfood.domain.model.Pedido;
 
 @Component
-public class PedidoConverter {
+public class PedidoAssembler {
 
 	@Autowired
     private ModelMapper modelMapper;

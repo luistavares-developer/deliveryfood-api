@@ -1,4 +1,4 @@
-package com.deliveryfood.api.converter;
+package com.deliveryfood.api.assembler;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +8,7 @@ import com.deliveryfood.api.model.FotoProdutoModel;
 import com.deliveryfood.domain.model.FotoProduto;
 
 @Component
-public class FotoProdutoModelConverter {
+public class FotoProdutoModelAssembler {
 
 	@Autowired
 	private ModelMapper modelMapper;

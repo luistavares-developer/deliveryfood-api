@@ -1,4 +1,4 @@
-package com.deliveryfood.api.converter;
+package com.deliveryfood.api.assembler;
 
 import java.util.Collection;
 import java.util.List;
@@ -13,7 +13,7 @@ import com.deliveryfood.api.model.input.GrupoInput;
 import com.deliveryfood.domain.model.Grupo;
 
 @Component
-public class GrupoConverter {
+public class GrupoAssembler {
 
 	@Autowired
 	private ModelMapper modelMapper;

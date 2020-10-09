@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deliveryfood.api.converter.EstadoConverter;
+import com.deliveryfood.api.assembler.EstadoAssembler;
 import com.deliveryfood.api.model.EstadoModel;
 import com.deliveryfood.api.model.input.EstadoInput;
 import com.deliveryfood.api.openapi.controller.EstadoControllerOpenApi;
@@ -33,7 +33,7 @@ public class EstadoController implements EstadoControllerOpenApi {
 	private EstadoService estadoService;
 	
 	@Autowired
-	private EstadoConverter estadoConverter;
+	private EstadoAssembler estadoConverter;
 
 	@GetMapping
 	public List<EstadoModel> findAll() {

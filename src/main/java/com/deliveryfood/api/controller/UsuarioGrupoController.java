@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deliveryfood.api.converter.GrupoConverter;
+import com.deliveryfood.api.assembler.GrupoAssembler;
 import com.deliveryfood.api.model.GrupoModel;
 import com.deliveryfood.api.openapi.controller.UsuarioGrupoControllerOpenApi;
 import com.deliveryfood.domain.model.Usuario;
@@ -27,7 +27,7 @@ public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
 	private UsuarioService usuarioService;
 	
 	@Autowired
-	private GrupoConverter grupoConverter;
+	private GrupoAssembler grupoConverter;
 	
 	@GetMapping
 	public List<GrupoModel> findAll(@PathVariable Long usuarioId) {

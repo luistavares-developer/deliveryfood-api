@@ -1,4 +1,4 @@
-package com.deliveryfood.api.converter;
+package com.deliveryfood.api.assembler;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,7 +12,7 @@ import com.deliveryfood.api.model.input.EstadoInput;
 import com.deliveryfood.domain.model.Estado;
 
 @Component
-public class EstadoConverter {
+public class EstadoAssembler {
 
 	@Autowired
 	private ModelMapper modelMapper;

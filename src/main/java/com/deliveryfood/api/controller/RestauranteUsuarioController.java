@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deliveryfood.api.converter.UsuarioConverter;
+import com.deliveryfood.api.assembler.UsuarioAssembler;
 import com.deliveryfood.api.model.UsuarioModel;
 import com.deliveryfood.api.openapi.controller.RestauranteUsuarioControllerOpenApi;
 import com.deliveryfood.domain.model.Restaurante;
@@ -27,7 +27,7 @@ public class RestauranteUsuarioController implements RestauranteUsuarioControlle
 	private RestauranteService restauranteService;
 	
 	@Autowired
-	private UsuarioConverter usuarioConverter;
+	private UsuarioAssembler usuarioConverter;
 	
 	@GetMapping
 	public List<UsuarioModel> findAll(@PathVariable Long restauranteId) {

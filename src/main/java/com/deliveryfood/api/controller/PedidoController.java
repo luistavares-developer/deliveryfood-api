@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deliveryfood.api.converter.PedidoConverter;
-import com.deliveryfood.api.converter.PedidoResumoModelConverter;
+import com.deliveryfood.api.assembler.PedidoAssembler;
+import com.deliveryfood.api.assembler.PedidoResumoModelAssembler;
 import com.deliveryfood.api.model.PedidoModel;
 import com.deliveryfood.api.model.PedidoResumoModel;
 import com.deliveryfood.api.model.input.PedidoInput;
@@ -46,10 +46,10 @@ public class PedidoController implements PedidoControllerOpenApi {
     private PedidoService pedidoService;
     
     @Autowired
-    private PedidoConverter pedidoConverter;
+    private PedidoAssembler pedidoConverter;
     
     @Autowired
-    private PedidoResumoModelConverter pedidoResumoModelConverter;
+    private PedidoResumoModelAssembler pedidoResumoModelConverter;
     
     @GetMapping
     public Page<PedidoResumoModel> findByFilter(PedidoFilter filter, @PageableDefault(size = 10) Pageable pageable) {

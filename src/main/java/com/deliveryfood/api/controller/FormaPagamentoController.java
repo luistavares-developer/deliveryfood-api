@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
-import com.deliveryfood.api.converter.FormaPagamentoConverter;
+import com.deliveryfood.api.assembler.FormaPagamentoAssembler;
 import com.deliveryfood.api.model.FormaPagamentoModel;
 import com.deliveryfood.api.model.input.FormaPagamentoInput;
 import com.deliveryfood.api.openapi.controller.FormaPagamentoControllerOpenApi;
@@ -42,7 +42,7 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
 	private FormaPagamentoRepository formaPagamentoRepository;
 
 	@Autowired
-	private FormaPagamentoConverter formaPagamentoConverter;
+	private FormaPagamentoAssembler formaPagamentoConverter;
 
 	@GetMapping
 	public ResponseEntity<List<FormaPagamentoModel>> findAll(ServletWebRequest request) {

@@ -1,4 +1,4 @@
-package com.deliveryfood.api.converter;
+package com.deliveryfood.api.assembler;
 
 import java.util.Collection;
 import java.util.List;
@@ -12,7 +12,7 @@ import com.deliveryfood.api.model.PermissaoModel;
 import com.deliveryfood.domain.model.Permissao;
 
 @Component
-public class PermissaoConverter {
+public class PermissaoAssembler {
 
 	@Autowired
 	private ModelMapper modelMapper;

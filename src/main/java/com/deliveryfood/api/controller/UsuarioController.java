@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deliveryfood.api.converter.UsuarioConverter;
+import com.deliveryfood.api.assembler.UsuarioAssembler;
 import com.deliveryfood.api.model.UsuarioModel;
 import com.deliveryfood.api.model.input.SenhaInput;
 import com.deliveryfood.api.model.input.UsuarioComSenhaInput;
@@ -34,7 +34,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 	private UsuarioService usuarioService;
 	
 	@Autowired
-	private UsuarioConverter usuarioConverter;
+	private UsuarioAssembler usuarioConverter;
 
 	@GetMapping
 	public List<UsuarioModel> findAll() {

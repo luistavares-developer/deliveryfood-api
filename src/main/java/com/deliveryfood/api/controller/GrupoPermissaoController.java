@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deliveryfood.api.converter.PermissaoConverter;
+import com.deliveryfood.api.assembler.PermissaoAssembler;
 import com.deliveryfood.api.model.PermissaoModel;
 import com.deliveryfood.api.openapi.controller.GrupoPermissaoControllerOpenApi;
 import com.deliveryfood.domain.model.Grupo;
@@ -27,7 +27,7 @@ public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi
 	private GrupoService grupoService;
 
 	@Autowired
-	private PermissaoConverter permissaoConverter;
+	private PermissaoAssembler permissaoConverter;
 	
 	@GetMapping
 	public List<PermissaoModel> findAll(@PathVariable Long grupoId) {

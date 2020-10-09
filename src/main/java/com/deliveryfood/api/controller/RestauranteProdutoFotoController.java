@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.deliveryfood.api.converter.FotoProdutoModelConverter;
+import com.deliveryfood.api.assembler.FotoProdutoModelAssembler;
 import com.deliveryfood.api.model.FotoProdutoModel;
 import com.deliveryfood.api.model.input.FotoProdutoInput;
 import com.deliveryfood.api.openapi.controller.RestauranteProdutoFotoControllerOpenApi;
@@ -42,7 +42,7 @@ public class RestauranteProdutoFotoController implements RestauranteProdutoFotoC
 	private ProdutoService produtoService;
 
 	@Autowired
-	private FotoProdutoModelConverter fotoProdutoModelConverter;
+	private FotoProdutoModelAssembler fotoProdutoModelConverter;
 
 	@Autowired
 	private FotoStorageService fotoStorageService;

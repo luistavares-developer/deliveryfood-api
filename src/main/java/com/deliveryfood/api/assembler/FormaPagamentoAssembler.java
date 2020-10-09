@@ -1,4 +1,4 @@
-package com.deliveryfood.api.converter;
+package com.deliveryfood.api.assembler;
 
 import java.util.Collection;
 import java.util.List;
@@ -13,7 +13,7 @@ import com.deliveryfood.api.model.input.FormaPagamentoInput;
 import com.deliveryfood.domain.model.FormaPagamento;
 
 @Component
-public class FormaPagamentoConverter {
+public class FormaPagamentoAssembler {
 
 	@Autowired
 	private ModelMapper modelMapper;
