@@ -1,16 +1,16 @@
 package com.deliveryfood.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,34 +46,35 @@ public class PedidoController implements PedidoControllerOpenApi {
     private PedidoService pedidoService;
     
     @Autowired
-    private PedidoAssembler pedidoConverter;
+    private PedidoAssembler pedidoAssembler;
     
     @Autowired
-    private PedidoResumoModelAssembler pedidoResumoModelConverter;
+    private PedidoResumoModelAssembler pedidoResumoModelAssembler;
+    
+    @Autowired
+    private PagedResourcesAssembler<Pedido> pagedModelAssembler;
     
     @GetMapping
-    public Page<PedidoResumoModel> findByFilter(PedidoFilter filter, @PageableDefault(size = 10) Pageable pageable) {
+    public PagedModel<PedidoResumoModel> findByFilter(PedidoFilter filter, @PageableDefault(size = 10) Pageable pageable) {
         Page<Pedido> pedidosPage = pedidoRepository.findAll(PedidoSpecs.filter(filter), pageable);
         
-        List<PedidoResumoModel> pedidos = pedidoResumoModelConverter.toCollectionModel(pedidosPage.getContent());
+        PagedModel<PedidoResumoModel> pedidoResumoPagedModel = pagedModelAssembler.toModel(pedidosPage, pedidoResumoModelAssembler);
         
-        Page<PedidoResumoModel> pedidosResumoPage = new PageImpl<>(pedidos, pageable, pedidosPage.getTotalElements());
-        
-        return pedidosResumoPage;
+        return pedidoResumoPagedModel;
     }
     
     @GetMapping("/{codigoPedido}")
     public PedidoModel findById(@PathVariable String codigoPedido) {
         Pedido pedido = pedidoService.findByCodigo(codigoPedido);
         
-        return pedidoConverter.toModel(pedido);
+        return pedidoAssembler.toModel(pedido);
     }  
     
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PedidoModel save(@Valid @RequestBody PedidoInput pedidoInput) {
         try {
-            Pedido novoPedido = pedidoConverter.toDomain(pedidoInput);
+            Pedido novoPedido = pedidoAssembler.toDomain(pedidoInput);
 
             // TODO pegar usuário autenticado
             novoPedido.setCliente(new Usuario());
@@ -81,27 +82,31 @@ public class PedidoController implements PedidoControllerOpenApi {
 
             novoPedido = pedidoService.save(novoPedido);
 
-            return pedidoConverter.toModel(novoPedido);
+            return pedidoAssembler.toModel(novoPedido);
         } catch (EntidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage(), e);
         }
     }
     
     @PutMapping("/{codigoPedido}/confirmacao")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void confirmar(@PathVariable String codigoPedido) {
+    public ResponseEntity<Void> confirmar(@PathVariable String codigoPedido) {
     	pedidoService.confirmar(codigoPedido);
+    	
+    	return ResponseEntity.noContent().build();
     }
     
     @PutMapping("/{codigoPedido}/entrega")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void entregar(@PathVariable String codigoPedido) {
+    public ResponseEntity<Void> entregar(@PathVariable String codigoPedido) {
     	pedidoService.entregar(codigoPedido);
+    	
+    	return ResponseEntity.noContent().build();
     }
     
     @PutMapping("/{codigoPedido}/cancelamento")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void cancelar(@PathVariable String codigoPedido) {
+    public ResponseEntity<Void> cancelar(@PathVariable String codigoPedido) {
     	pedidoService.cancelar(codigoPedido);
+
+    	return ResponseEntity.noContent().build();
     }
+    
 }           

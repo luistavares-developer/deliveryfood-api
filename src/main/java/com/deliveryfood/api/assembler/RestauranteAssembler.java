@@ -1,12 +1,18 @@
 package com.deliveryfood.api.assembler;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import static com.deliveryfood.api.assembler.hateaos.LinkAssembler.linkToCidade;
+import static com.deliveryfood.api.assembler.hateaos.LinkAssembler.linkToCozinha;
+import static com.deliveryfood.api.assembler.hateaos.LinkAssembler.linkToRestauranteFormasPagamento;
+import static com.deliveryfood.api.assembler.hateaos.LinkAssembler.linkToRestauranteResponsaveis;
+import static com.deliveryfood.api.assembler.hateaos.LinkAssembler.linkToRestaurantes;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
+import com.deliveryfood.api.controller.RestauranteController;
 import com.deliveryfood.api.model.RestauranteModel;
 import com.deliveryfood.api.model.input.RestauranteInput;
 import com.deliveryfood.domain.model.Cidade;
@@ -14,20 +20,44 @@ import com.deliveryfood.domain.model.Cozinha;
 import com.deliveryfood.domain.model.Restaurante;
 
 @Component
-public class RestauranteAssembler {
+public class RestauranteAssembler extends RepresentationModelAssemblerSupport<Restaurante, RestauranteModel> {
+
+	public RestauranteAssembler() {
+		super(RestauranteController.class, RestauranteModel.class);
+	}
 
 	@Autowired
 	private ModelMapper modelMapper;
 	
 	public RestauranteModel toModel(Restaurante restaurante) {
-		return modelMapper.map(restaurante, RestauranteModel.class);
+		RestauranteModel restauranteModel = createModelWithId(restaurante.getId(), restaurante);
+        modelMapper.map(restaurante, restauranteModel);
+        
+        restauranteModel.add(linkToRestaurantes("restaurantes"));
+        
+        restauranteModel.getCozinha().add(
+                linkToCozinha(restaurante.getCozinha().getId()));
+        
+        if(restaurante.getEndereco() != null) {
+        	restauranteModel.getEndereco().getCidade().add(
+        			linkToCidade(restaurante.getEndereco().getCidade().getId()));
+        }
+        
+        restauranteModel.add(linkToRestauranteFormasPagamento(restaurante.getId(), 
+                "formas-pagamento"));
+        
+        restauranteModel.add(linkToRestauranteResponsaveis(restaurante.getId(), 
+                "responsaveis"));
+        
+        return restauranteModel;
+        
 	}
 	
-	public List<RestauranteModel> toCollectionModel(List<Restaurante> restaurantes) {
-		return restaurantes.stream()
-				.map(restaurante -> toModel(restaurante))
-				.collect(Collectors.toList());
-	}
+	@Override
+    public CollectionModel<RestauranteModel> toCollectionModel(Iterable<? extends Restaurante> entities) {
+        return super.toCollectionModel(entities)
+                .add(linkToRestaurantes());
+    }   
 	
 	public Restaurante toDomain(RestauranteInput restauranteInput) {
 		return modelMapper.map(restauranteInput, Restaurante.class);

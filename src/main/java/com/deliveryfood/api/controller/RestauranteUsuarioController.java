@@ -1,8 +1,10 @@
 package com.deliveryfood.api.controller;
 
-import java.util.List;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,12 +29,22 @@ public class RestauranteUsuarioController implements RestauranteUsuarioControlle
 	private RestauranteService restauranteService;
 	
 	@Autowired
-	private UsuarioAssembler usuarioConverter;
+	private UsuarioAssembler usuarioAssembler;
 	
 	@GetMapping
-	public List<UsuarioModel> findAll(@PathVariable Long restauranteId) {
+	public CollectionModel<UsuarioModel> findAll(@PathVariable Long restauranteId) {
 		Restaurante restaurante = restauranteService.findById(restauranteId);
-		return usuarioConverter.toCollectionModel(restaurante.getUsuarios());
+		CollectionModel<UsuarioModel> usuarios = usuarioAssembler.toCollectionModel(restaurante.getUsuarios());
+		
+		if(restaurante.getUsuarios().isEmpty()) {
+			usuarios.removeLinks();
+		} else {
+			usuarios.removeLinks().add(linkTo(
+					methodOn(RestauranteUsuarioController.class).findAll(restauranteId)
+					).withSelfRel());
+		}
+		
+		return usuarios;
 	}
 	
 	@PutMapping("/{usuarioId}")

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,17 +15,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.deliveryfood.api.assembler.RestauranteApenasNomeModelAssembler;
 import com.deliveryfood.api.assembler.RestauranteAssembler;
+import com.deliveryfood.api.assembler.RestauranteBasicoModelAssembler;
+import com.deliveryfood.api.model.RestauranteApenasNomeModel;
+import com.deliveryfood.api.model.RestauranteBasicoModel;
 import com.deliveryfood.api.model.RestauranteModel;
 import com.deliveryfood.api.model.input.RestauranteInput;
-import com.deliveryfood.api.model.view.RestauranteView;
 import com.deliveryfood.api.openapi.controller.RestauranteControllerOpenApi;
 import com.deliveryfood.domain.model.Restaurante;
 import com.deliveryfood.domain.service.RestauranteService;
-import com.fasterxml.jackson.annotation.JsonView;
 
 @RestController
 @RequestMapping(path = "/restaurantes", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -34,32 +36,36 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 	private RestauranteService restauranteService;
 
 	@Autowired
-	private RestauranteAssembler restauranteConverter;
+	private RestauranteAssembler restauranteAssembler;
+	
+	@Autowired
+	private RestauranteApenasNomeModelAssembler restauranteApenasNomeAssembler;
+	
+	@Autowired
+	private RestauranteBasicoModelAssembler restauranteBasicoAssembler;
 
-	@JsonView(RestauranteView.Resumo.class)
 	@GetMapping
-	public List<RestauranteModel> findAll() {
+	public CollectionModel<RestauranteBasicoModel> findAll() {
 
-		return restauranteConverter.toCollectionModel(restauranteService.findAll());
+		return restauranteBasicoAssembler.toCollectionModel(restauranteService.findAll());
 	}
 
-	@JsonView(RestauranteView.ApenasNome.class)
 	@GetMapping(params = "projecao=id-nome")
-	public List<RestauranteModel> listarIdNome() {
-		return findAll();
+	public CollectionModel<RestauranteApenasNomeModel> listarIdNome() {
+		return restauranteApenasNomeAssembler.toCollectionModel(restauranteService.findAll());
 	}
 	
 	@GetMapping("/{restauranteId}")
 	public RestauranteModel findById(@PathVariable Long restauranteId) {
 
-		return restauranteConverter.toModel(restauranteService.findById(restauranteId));
+		return restauranteAssembler.toModel(restauranteService.findById(restauranteId));
 	}
 
 	@PostMapping
 	public ResponseEntity<RestauranteModel> save(@RequestBody @Valid RestauranteInput restauranteInput) {
 
-		Restaurante restaurante = restauranteConverter.toDomain(restauranteInput);
-		RestauranteModel novoRestaurante = restauranteConverter.toModel(restauranteService.save(restaurante));
+		Restaurante restaurante = restauranteAssembler.toDomain(restauranteInput);
+		RestauranteModel novoRestaurante = restauranteAssembler.toModel(restauranteService.save(restaurante));
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(novoRestaurante);
 	}
@@ -69,45 +75,51 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 			@RequestBody @Valid RestauranteInput restauranteInput) {
 
 		Restaurante restauranteAtual = restauranteService.findById(restauranteId);
-		restauranteConverter.copyPropetiesToDomain(restauranteInput, restauranteAtual);
-		RestauranteModel restauranteAtualizado = restauranteConverter.toModel(restauranteService.save(restauranteAtual));
+		restauranteAssembler.copyPropetiesToDomain(restauranteInput, restauranteAtual);
+		RestauranteModel restauranteAtualizado = restauranteAssembler.toModel(restauranteService.save(restauranteAtual));
 
 		return ResponseEntity.ok(restauranteAtualizado);
 	}
 
 	@PutMapping("/{restauranteId}/ativo")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void ativar(@PathVariable Long restauranteId) {
+	public ResponseEntity<Void> ativar(@PathVariable Long restauranteId) {
 		restauranteService.ativar(restauranteId);
+
+		return ResponseEntity.noContent().build();
 	}
 	
 	@PutMapping("/ativacoes")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void ativarLote(@RequestBody List<Long> restauranteIds) {
+	public ResponseEntity<Void> ativarLote(@RequestBody List<Long> restauranteIds) {
 		restauranteService.ativarLote(restauranteIds);
+
+		return ResponseEntity.noContent().build();
 	}
 
 	@PutMapping("/{restauranteId}/inativo")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void inativar(@PathVariable Long restauranteId) {
+	public ResponseEntity<Void> inativar(@PathVariable Long restauranteId) {
 		restauranteService.inativar(restauranteId);
+
+		return ResponseEntity.noContent().build();
 	}
 	
 	@PutMapping("/inativacoes")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void inativarLote(@RequestBody List<Long> restauranteIds) {
+	public ResponseEntity<Void> inativarLote(@RequestBody List<Long> restauranteIds) {
 		restauranteService.inativarLote(restauranteIds);
+	
+		return ResponseEntity.noContent().build();
 	}
 	
 	@PutMapping("/{restauranteId}/abertura")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void abrir(@PathVariable Long restauranteId) {
+	public ResponseEntity<Void> abrir(@PathVariable Long restauranteId) {
 		restauranteService.abrir(restauranteId);
+		
+		return ResponseEntity.noContent().build();
 	}
 
 	@PutMapping("/{restauranteId}/fechamento")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void fechamento(@PathVariable Long restauranteId) {
+	public ResponseEntity<Void> fechamento(@PathVariable Long restauranteId) {
 		restauranteService.fechar(restauranteId);
+		
+		return ResponseEntity.noContent().build();
 	}
 }

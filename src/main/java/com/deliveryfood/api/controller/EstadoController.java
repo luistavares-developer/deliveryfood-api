@@ -1,10 +1,9 @@
 package com.deliveryfood.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +35,7 @@ public class EstadoController implements EstadoControllerOpenApi {
 	private EstadoAssembler estadoConverter;
 
 	@GetMapping
-	public List<EstadoModel> findAll() {
+	public CollectionModel<EstadoModel> findAll() {
 		
 		return estadoConverter.toCollectionModel(estadoService.findAll());
 	}

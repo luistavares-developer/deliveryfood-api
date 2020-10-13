@@ -1,31 +1,43 @@
 package com.deliveryfood.api.assembler;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import static com.deliveryfood.api.assembler.hateaos.LinkAssembler.linkToEstados;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
+import com.deliveryfood.api.controller.EstadoController;
 import com.deliveryfood.api.model.EstadoModel;
 import com.deliveryfood.api.model.input.EstadoInput;
 import com.deliveryfood.domain.model.Estado;
 
 @Component
-public class EstadoAssembler {
+public class EstadoAssembler extends RepresentationModelAssemblerSupport<Estado, EstadoModel> {
 
 	@Autowired
 	private ModelMapper modelMapper;
 	
-	public EstadoModel toModel(Estado estado) {
-		return modelMapper.map(estado, EstadoModel.class);
+	public EstadoAssembler() {
+		super(EstadoController.class, EstadoModel.class);
 	}
 	
-	public List<EstadoModel> toCollectionModel(List<Estado> estados	) {
-		return estados.stream()
-				.map(estado -> toModel(estado))
-				.collect(Collectors.toList());
+	public EstadoModel toModel(Estado estado) {
+		EstadoModel estadoModel = createModelWithId(estado.getId(), estado);
+		modelMapper.map(estado, estadoModel);
+		
+		estadoModel.add(linkTo(EstadoController.class).withRel("estados"));
+		
+		return estadoModel;
 	}
+	
+	@Override
+	public CollectionModel<EstadoModel> toCollectionModel(Iterable<? extends Estado> entities) {
+	    return super.toCollectionModel(entities)
+	        .add(linkToEstados());
+	}    
 	
 	public Estado toDomain(EstadoInput estadoInput) {
 		return modelMapper.map(estadoInput, Estado.class);

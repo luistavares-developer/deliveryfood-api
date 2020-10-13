@@ -1,14 +1,13 @@
 package com.deliveryfood.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -37,30 +36,31 @@ public class CozinhaController implements CozinhaControllerOpenApi {
 	private CozinhaService cozinhaService;
 	
 	@Autowired
-	private CozinhaAssembler cozinhaConverter;
+	private CozinhaAssembler cozinhaAssembler;
+	
+	@Autowired
+	private PagedResourcesAssembler<Cozinha> pagedModelAssembler;
 
 	@GetMapping
-	public Page<CozinhaModel> findAll(@PageableDefault(size = 10) Pageable pageable) {
+	public PagedModel<CozinhaModel> findAll(@PageableDefault(size = 10) Pageable pageable) {
 		Page<Cozinha> cozinhasPage = cozinhaService.findAll(pageable);
 		
-		List<CozinhaModel> cozinhaModel = cozinhaConverter.toCollectionModel(cozinhasPage.getContent());
+		PagedModel<CozinhaModel> cozinhaPagedModel = pagedModelAssembler.toModel(cozinhasPage, cozinhaAssembler);
 		
-		Page<CozinhaModel> cozinhasModelPage = new PageImpl<>(cozinhaModel, pageable, cozinhasPage.getTotalElements());
-		
-		return cozinhasModelPage;
+		return cozinhaPagedModel;
 	}
 
 	@GetMapping("/{cozinhaId}")
 	public CozinhaModel findById(@PathVariable Long cozinhaId) {
 		
-		return cozinhaConverter.toModel(cozinhaService.findById(cozinhaId));
+		return cozinhaAssembler.toModel(cozinhaService.findById(cozinhaId));
 	}
 
 	@PostMapping
 	public ResponseEntity<CozinhaModel> save(@RequestBody @Valid CozinhaInput cozinhaInput) {
 		
-		Cozinha cozinha = cozinhaConverter.toDomain(cozinhaInput);
-		CozinhaModel novaCozinha = cozinhaConverter.toModel(cozinhaService.save(cozinha));
+		Cozinha cozinha = cozinhaAssembler.toDomain(cozinhaInput);
+		CozinhaModel novaCozinha = cozinhaAssembler.toModel(cozinhaService.save(cozinha));
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(novaCozinha);
 	}
@@ -69,8 +69,8 @@ public class CozinhaController implements CozinhaControllerOpenApi {
 	public ResponseEntity<CozinhaModel> update(@PathVariable Long cozinhaId, @RequestBody @Valid CozinhaInput cozinhaInput) {
 		
 		Cozinha cozinhaAtual = cozinhaService.findById(cozinhaId);
-		cozinhaConverter.copyPropetiesToDomain(cozinhaInput, cozinhaAtual);
-		CozinhaModel cozinhaAtualizada = cozinhaConverter.toModel(cozinhaService.save(cozinhaAtual));
+		cozinhaAssembler.copyPropetiesToDomain(cozinhaInput, cozinhaAtual);
+		CozinhaModel cozinhaAtualizada = cozinhaAssembler.toModel(cozinhaService.save(cozinhaAtual));
 		
 		return ResponseEntity.ok(cozinhaAtualizada);
 	}

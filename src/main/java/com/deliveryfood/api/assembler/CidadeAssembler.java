@@ -1,5 +1,6 @@
 package com.deliveryfood.api.assembler;
 
+import static com.deliveryfood.api.assembler.hateaos.LinkAssembler.linkToCidades;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -19,13 +20,13 @@ import com.deliveryfood.domain.model.Estado;
 @Component
 public class CidadeAssembler extends RepresentationModelAssemblerSupport<Cidade, CidadeModel> {
 
+	@Autowired
+	private ModelMapper modelMapper;
+	
 	public CidadeAssembler() {
 		super(CidadeController.class, CidadeModel.class);
 	}
 
-	@Autowired
-	private ModelMapper modelMapper;
-	
 	@Override
 	public CidadeModel toModel(Cidade cidade) {
 		
@@ -45,7 +46,8 @@ public class CidadeAssembler extends RepresentationModelAssemblerSupport<Cidade,
 	
 	@Override
 	public CollectionModel<CidadeModel> toCollectionModel(Iterable<? extends Cidade> entities) {
-		return super.toCollectionModel(entities).add(linkTo(CidadeController.class).withSelfRel());
+	    return super.toCollectionModel(entities)
+	            .add(linkToCidades());
 	}
 	
 	public Cidade toDomain(CidadeInput cidadeInput) {

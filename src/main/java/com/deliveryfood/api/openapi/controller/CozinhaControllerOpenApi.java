@@ -1,7 +1,7 @@
 package com.deliveryfood.api.openapi.controller;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 
 import com.deliveryfood.api.exceptionhandler.model.Problem;
@@ -18,7 +18,7 @@ import io.swagger.annotations.ApiResponses;
 public interface CozinhaControllerOpenApi {
 
     @ApiOperation("Lista as cozinhas com paginação")
-    Page<CozinhaModel> findAll(Pageable pageable);
+    PagedModel<CozinhaModel> findAll(Pageable pageable);
     
     @ApiOperation("Busca uma cozinha por ID")
     @ApiResponses({

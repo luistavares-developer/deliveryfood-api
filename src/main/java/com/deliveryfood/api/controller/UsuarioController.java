@@ -1,10 +1,9 @@
 package com.deliveryfood.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -37,8 +36,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 	private UsuarioAssembler usuarioConverter;
 
 	@GetMapping
-	public List<UsuarioModel> findAll() {
-		
+	public CollectionModel<UsuarioModel> findAll() {
 		return usuarioConverter.toCollectionModel(usuarioService.findAll());
 	}
 

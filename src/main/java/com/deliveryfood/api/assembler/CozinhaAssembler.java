@@ -1,30 +1,41 @@
 package com.deliveryfood.api.assembler;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
+import com.deliveryfood.api.controller.CozinhaController;
 import com.deliveryfood.api.model.CozinhaModel;
 import com.deliveryfood.api.model.input.CozinhaInput;
 import com.deliveryfood.domain.model.Cozinha;
 
 @Component
-public class CozinhaAssembler {
+public class CozinhaAssembler extends RepresentationModelAssemblerSupport<Cozinha, CozinhaModel> {
+
 
 	@Autowired
 	private ModelMapper modelMapper;
 	
+	public CozinhaAssembler() {
+		super(CozinhaController.class, CozinhaModel.class);
+	}
+
 	public CozinhaModel toModel(Cozinha cozinha) {
-		return modelMapper.map(cozinha, CozinhaModel.class);
+		CozinhaModel cozinhaModel = createModelWithId(cozinha.getId(), cozinha);
+		modelMapper.map(cozinha, cozinhaModel);
+		
+		cozinhaModel.add(linkTo(CozinhaController.class).withRel("cozinhas"));
+		
+		return cozinhaModel;
 	}
 	
-	public List<CozinhaModel> toCollectionModel(List<Cozinha> cozinhas	) {
-		return cozinhas.stream()
-				.map(cozinha -> toModel(cozinha))
-				.collect(Collectors.toList());
+	@Override
+	public CollectionModel<CozinhaModel> toCollectionModel(Iterable<? extends Cozinha> entities) {
+		return super.toCollectionModel(entities).add(linkTo(CozinhaController.class).withSelfRel());
 	}
 	
 	public Cozinha toDomain(CozinhaInput cozinhaInput) {

@@ -1,7 +1,6 @@
 package com.deliveryfood.api.openapi.controller;
 
-import java.util.List;
-
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 
 import com.deliveryfood.api.exceptionhandler.model.Problem;
@@ -20,7 +19,7 @@ import io.swagger.annotations.ApiResponses;
 public interface UsuarioControllerOpenApi {
 
     @ApiOperation("Lista os usuários")
-    List<UsuarioModel> findAll();
+    CollectionModel<UsuarioModel> findAll();
 
     @ApiOperation("Busca um usuário por ID")
     @ApiResponses({
