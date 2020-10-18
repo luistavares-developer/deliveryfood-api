@@ -80,6 +80,22 @@ public class Restaurante {
 		setAtivo(false);
 	}
 	
+	public boolean podeSerAtivado() {
+		return !getAtivo();
+	}
+	
+	public boolean podeSerInativado() {
+		return getAtivo();
+	}
+	
+	public boolean podeSerAberto() {
+		return !getAberto();
+	}
+	
+	public boolean podeSerFechado() {
+		return getAberto();
+	}
+	
 	public boolean vincularFormaPagamento(FormaPagamento formaPagamento) {
 		return getFormasPagamento().add(formaPagamento);
 	}

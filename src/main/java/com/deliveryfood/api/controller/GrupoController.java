@@ -1,10 +1,9 @@
 package com.deliveryfood.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,25 +32,25 @@ public class GrupoController implements GrupoControllerOpenApi {
 	private GrupoService grupoService;
 	
 	@Autowired
-	private GrupoAssembler grupoConverter;
+	private GrupoAssembler grupoAssembler;
 
 	@GetMapping
-	public List<GrupoModel> findAll() {
+	public CollectionModel<GrupoModel> findAll() {
 		
-		return grupoConverter.toCollectionModel(grupoService.findAll());
+		return grupoAssembler.toCollectionModel(grupoService.findAll());
 	}
 
 	@GetMapping("/{grupoId}")
 	public GrupoModel findById(@PathVariable Long grupoId) {
 		
-		return grupoConverter.toModel(grupoService.findById(grupoId));
+		return grupoAssembler.toModel(grupoService.findById(grupoId));
 	}
 
 	@PostMapping
 	public ResponseEntity<GrupoModel> save(@RequestBody @Valid GrupoInput grupoInput) {
 		
-		Grupo grupo = grupoConverter.toDomain(grupoInput);
-		GrupoModel novoGrupo = grupoConverter.toModel(grupoService.save(grupo));
+		Grupo grupo = grupoAssembler.toDomain(grupoInput);
+		GrupoModel novoGrupo = grupoAssembler.toModel(grupoService.save(grupo));
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(novoGrupo);
 	}
@@ -60,8 +59,8 @@ public class GrupoController implements GrupoControllerOpenApi {
 	public ResponseEntity<GrupoModel> update(@PathVariable Long grupoId, @RequestBody @Valid GrupoInput grupoInput) {
 		
 		Grupo grupoAtual = grupoService.findById(grupoId);
-		grupoConverter.copyPropetiesToDomain(grupoInput, grupoAtual);
-		GrupoModel grupoAtualizado = grupoConverter.toModel(grupoService.save(grupoAtual));
+		grupoAssembler.copyPropetiesToDomain(grupoInput, grupoAtual);
+		GrupoModel grupoAtualizado = grupoAssembler.toModel(grupoService.save(grupoAtual));
 		
 		return ResponseEntity.ok(grupoAtualizado);
 	}

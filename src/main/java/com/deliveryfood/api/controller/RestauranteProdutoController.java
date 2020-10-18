@@ -1,10 +1,13 @@
 package com.deliveryfood.api.controller;
 
+import static com.deliveryfood.api.assembler.hateaos.LinkAssembler.linkToProdutos;
+
 import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,11 +41,11 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
 	private ProdutoService produtoService;
 
 	@Autowired
-	private ProdutoAssembler produtoConverter;
+	private ProdutoAssembler produtoAssembler;
 
 	@GetMapping
-	public List<ProdutoModel> findAll(@PathVariable Long restauranteId, 
-			@RequestParam(required = false) boolean incluirInativos) {
+	public CollectionModel<ProdutoModel> findAll(@PathVariable Long restauranteId, 
+			@RequestParam(required = false) Boolean incluirInativos) {
 		Restaurante restaurante = restauranteService.findById(restauranteId);
 		
 		List<Produto> produtos = null;
@@ -52,25 +55,25 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
 		} else {
 			produtos = produtoService.findAtivosByRestaurante(restaurante);
 		}
-
-		return produtoConverter.toCollectionModel(produtos);
+		
+		return produtoAssembler.toCollectionModel(produtos).add(linkToProdutos(restauranteId));
 	}
 
 	@GetMapping("/{produtoId}")
 	public ProdutoModel findById(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
 
 		Produto Produto = produtoService.findById(restauranteId, produtoId);
-		return produtoConverter.toModel(Produto);
+		return produtoAssembler.toModel(Produto);
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public ProdutoModel save(@PathVariable Long restauranteId, @RequestBody @Valid ProdutoInput produtoInput) {
 		Restaurante restaurante = restauranteService.findById(restauranteId);
-		Produto produto = produtoConverter.toDomain(produtoInput);
+		Produto produto = produtoAssembler.toDomain(produtoInput);
 		produto.setRestaurante(restaurante);
 
-		return produtoConverter.toModel(produtoService.save(produto));
+		return produtoAssembler.toModel(produtoService.save(produto));
 	}
 
 	@PutMapping("/{produtoId}")
@@ -79,9 +82,9 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
 		
 		Produto produtoAtual = produtoService.findById(restauranteId, produtoId);
 		
-		produtoConverter.copyPropetiesToDomain(produtoInput, produtoAtual);
+		produtoAssembler.copyPropetiesToDomain(produtoInput, produtoAtual);
 		
-		return produtoConverter.toModel(produtoService.save(produtoAtual));
+		return produtoAssembler.toModel(produtoService.save(produtoAtual));
 	}
 
 }

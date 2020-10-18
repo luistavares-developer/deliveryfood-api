@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
+import com.deliveryfood.api.controller.EstatisticasController.EstatisticasModel;
 import com.deliveryfood.domain.model.VendaDiaria;
 import com.deliveryfood.domain.repository.filter.VendaDiariaFilter;
 
@@ -35,4 +36,7 @@ public interface EstatisticasControllerOpenApi {
     ResponseEntity<byte[]> consultarVendasDiariasPdf(
             VendaDiariaFilter filtro,
             String timeOffset);
+    
+    @ApiOperation(value = "Estatísticas", hidden = true)
+    EstatisticasModel estatisticas();
 }

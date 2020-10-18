@@ -1,6 +1,7 @@
 package com.deliveryfood.api.openapi.controller;
 
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.http.ResponseEntity;
 
 import com.deliveryfood.api.exceptionhandler.model.Problem;
 import com.deliveryfood.api.model.UsuarioModel;
@@ -28,7 +29,7 @@ public interface RestauranteUsuarioControllerOpenApi {
         @ApiResponse(code = 404, message = "Restaurante ou usuário não encontrado", 
             response = Problem.class)
     })
-    void desvincularUsuario(
+    ResponseEntity<Void> desvincularUsuario(
             @ApiParam(value = "ID do restaurante", example = "1", required = true)
             Long restauranteId,
             
@@ -41,7 +42,7 @@ public interface RestauranteUsuarioControllerOpenApi {
         @ApiResponse(code = 404, message = "Restaurante ou usuário não encontrado", 
             response = Problem.class)
     })
-    void vincularUsuario(
+    ResponseEntity<Void> vincularUsuario(
             @ApiParam(value = "ID do restaurante", example = "1", required = true)
             Long restauranteId,
             

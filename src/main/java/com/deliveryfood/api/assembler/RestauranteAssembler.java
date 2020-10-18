@@ -1,7 +1,12 @@
 package com.deliveryfood.api.assembler;
 
+import static com.deliveryfood.api.assembler.hateaos.LinkAssembler.linkToAbrirRestaurante;
+import static com.deliveryfood.api.assembler.hateaos.LinkAssembler.linkToAtivarRestaurante;
 import static com.deliveryfood.api.assembler.hateaos.LinkAssembler.linkToCidade;
 import static com.deliveryfood.api.assembler.hateaos.LinkAssembler.linkToCozinha;
+import static com.deliveryfood.api.assembler.hateaos.LinkAssembler.linkToFecharRestaurante;
+import static com.deliveryfood.api.assembler.hateaos.LinkAssembler.linkToInativarRestaurante;
+import static com.deliveryfood.api.assembler.hateaos.LinkAssembler.linkToProdutos;
 import static com.deliveryfood.api.assembler.hateaos.LinkAssembler.linkToRestauranteFormasPagamento;
 import static com.deliveryfood.api.assembler.hateaos.LinkAssembler.linkToRestauranteResponsaveis;
 import static com.deliveryfood.api.assembler.hateaos.LinkAssembler.linkToRestaurantes;
@@ -43,6 +48,24 @@ public class RestauranteAssembler extends RepresentationModelAssemblerSupport<Re
         			linkToCidade(restaurante.getEndereco().getCidade().getId()));
         }
         
+        if(restaurante.podeSerAberto()) {
+        	restauranteModel.add(linkToAbrirRestaurante(restauranteModel.getId(), "abrir"));
+        }
+        
+        if(restaurante.podeSerFechado()) {
+        	restauranteModel.add(linkToFecharRestaurante(restauranteModel.getId(), "fechar"));
+        }
+        
+        if(restaurante.podeSerAtivado()) {
+        	restauranteModel.add(linkToAtivarRestaurante(restauranteModel.getId(), "ativar"));
+        }
+        
+        if(restaurante.podeSerInativado()) {
+        	restauranteModel.add(linkToInativarRestaurante(restauranteModel.getId(), "inativar"));
+        }
+        
+        restauranteModel.add(linkToProdutos(restaurante.getId(), "produtos"));
+
         restauranteModel.add(linkToRestauranteFormasPagamento(restaurante.getId(), 
                 "formas-pagamento"));
         

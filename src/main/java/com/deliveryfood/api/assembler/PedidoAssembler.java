@@ -34,7 +34,7 @@ public class PedidoAssembler extends RepresentationModelAssemblerSupport<Pedido,
 		PedidoModel pedidoModel = createModelWithId(pedido.getCodigo(), pedido);
 		modelMapper.map(pedido, pedidoModel);
 
-		pedidoModel.add(LinkAssembler.linkToPedidos());
+		pedidoModel.add(LinkAssembler.linkToPedidos("pedidos"));
 
 		pedidoModel.getRestaurante().add(linkToRestaurante(pedidoModel.getRestaurante().getId()));
 

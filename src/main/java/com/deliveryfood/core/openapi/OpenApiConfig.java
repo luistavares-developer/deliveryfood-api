@@ -70,7 +70,9 @@ public class OpenApiConfig implements WebMvcConfigurer{
 				      new Tag("Estados", "Gerencia os estados"),
 				      new Tag("Produtos", "Gerencia os produtos de restaurante"),
 				      new Tag("Usuários", "Gerencia os usuários"),
-				      new Tag("Estatísticas", "Estatísticas do Delivery Food"));
+				      new Tag("Estatísticas", "Estatísticas do Delivery Food"),
+					  new Tag("Permissões", "Gerencia as permissões"));
+
 	}
 	
 	@Override

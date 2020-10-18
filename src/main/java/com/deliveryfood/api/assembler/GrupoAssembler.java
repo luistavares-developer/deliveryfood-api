@@ -1,32 +1,46 @@
 package com.deliveryfood.api.assembler;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+import static com.deliveryfood.api.assembler.hateaos.LinkAssembler.linkToGrupoPermissoes;
+import static com.deliveryfood.api.assembler.hateaos.LinkAssembler.linkToGrupos;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
+import com.deliveryfood.api.controller.GrupoController;
 import com.deliveryfood.api.model.GrupoModel;
 import com.deliveryfood.api.model.input.GrupoInput;
 import com.deliveryfood.domain.model.Grupo;
 
 @Component
-public class GrupoAssembler {
+public class GrupoAssembler extends RepresentationModelAssemblerSupport<Grupo, GrupoModel> {
 
 	@Autowired
 	private ModelMapper modelMapper;
 	
-	public GrupoModel toModel(Grupo grupo) {
-		return modelMapper.map(grupo, GrupoModel.class);
-	}
+	public GrupoAssembler() {
+        super(GrupoController.class, GrupoModel.class);
+    }
 	
-	public List<GrupoModel> toCollectionModel(Collection<Grupo> grupos	) {
-		return grupos.stream()
-				.map(grupo -> toModel(grupo))
-				.collect(Collectors.toList());
-	}
+	@Override
+    public GrupoModel toModel(Grupo grupo) {
+        GrupoModel grupoModel = createModelWithId(grupo.getId(), grupo);
+        modelMapper.map(grupo, grupoModel);
+        
+        grupoModel.add(linkToGrupos("grupos"));
+        
+        grupoModel.add(linkToGrupoPermissoes(grupo.getId(), "permissoes"));
+        
+        return grupoModel;
+    }
+    
+    @Override
+    public CollectionModel<GrupoModel> toCollectionModel(Iterable<? extends Grupo> entities) {
+        return super.toCollectionModel(entities)
+                .add(linkToGrupos());
+    }            
 	
 	public Grupo toDomain(GrupoInput grupoInput) {
 		return modelMapper.map(grupoInput, Grupo.class);

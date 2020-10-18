@@ -1,6 +1,7 @@
 package com.deliveryfood.api.openapi.controller;
 
-import java.util.List;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.http.ResponseEntity;
 
 import com.deliveryfood.api.exceptionhandler.model.Problem;
 import com.deliveryfood.api.model.GrupoModel;
@@ -18,7 +19,7 @@ public interface UsuarioGrupoControllerOpenApi {
     @ApiResponses({
         @ApiResponse(code = 404, message = "Usuário não encontrado", response = Problem.class)
     })
-    List<GrupoModel> findAll(
+    CollectionModel<GrupoModel> findAll(
             @ApiParam(value = "ID do usuário", example = "1", required = true)
             Long usuarioId);
 
@@ -28,7 +29,7 @@ public interface UsuarioGrupoControllerOpenApi {
         @ApiResponse(code = 404, message = "Usuário ou grupo não encontrado", 
             response = Problem.class)
     })
-    void desvincularGrupo(
+    ResponseEntity<Void> desvincularGrupo(
             @ApiParam(value = "ID do usuário", example = "1", required = true)
             Long usuarioId,
             
@@ -41,7 +42,7 @@ public interface UsuarioGrupoControllerOpenApi {
         @ApiResponse(code = 404, message = "Usuário ou grupo não encontrado", 
             response = Problem.class)
     })
-    void vincularGrupo(
+    ResponseEntity<Void> vincularGrupo(
             @ApiParam(value = "ID do usuário", example = "1", required = true)
             Long usuarioId,
             

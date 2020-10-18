@@ -1,10 +1,14 @@
 package com.deliveryfood.api.controller;
 
-import java.util.List;
+import static com.deliveryfood.api.assembler.hateaos.LinkAssembler.linkToDesvincularFormaPagamentoDeRestaurante;
+import static com.deliveryfood.api.assembler.hateaos.LinkAssembler.linkToRestauranteFormasPagamento;
+import static com.deliveryfood.api.assembler.hateaos.LinkAssembler.linkToVincularFormaPagamentoDeRestaurante;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,25 +31,38 @@ public class RestauranteFormasPagamentoController implements RestauranteFormaPag
 	private RestauranteService restauranteService;
 
 	@Autowired
-	private FormaPagamentoAssembler formaPagamentoConverter;
-	
+	private FormaPagamentoAssembler formaPagamentoAssembler;
+
 	@GetMapping
-	public List<FormaPagamentoModel> findAll(@PathVariable Long restauranteId) {
+	public CollectionModel<FormaPagamentoModel> findAll(@PathVariable Long restauranteId) {
 
 		Restaurante restaurante = restauranteService.findById(restauranteId);
-		return formaPagamentoConverter.toCollectionModel(restaurante.getFormasPagamento());
+		CollectionModel<FormaPagamentoModel> formasPagamentoModel = formaPagamentoAssembler.toCollectionModel(
+				restaurante.getFormasPagamento())
+				.removeLinks()
+				.add(linkToRestauranteFormasPagamento(restauranteId))
+				.add(linkToVincularFormaPagamentoDeRestaurante(restauranteId, "vincular"));
+
+		formasPagamentoModel.getContent().forEach(formaPagamento -> {
+			formaPagamento.add(linkToDesvincularFormaPagamentoDeRestaurante(restaurante.getId(), formaPagamento.getId(), "desvincular"));
+		});
+		
+		return formasPagamentoModel;
 	}
-	
+
 	@PutMapping("/{formaPagamentoId}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void vincularFormaPagamento(@PathVariable Long restauranteId, @PathVariable Long formaPagamentoId) {
+	public ResponseEntity<Void> vincularFormaPagamento(@PathVariable Long restauranteId, @PathVariable Long formaPagamentoId) {
 		restauranteService.vincularFormaPagamento(restauranteId, formaPagamentoId);
+		
+		return ResponseEntity.noContent().build();
 	}
-	
+
 	@DeleteMapping("/{formaPagamentoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void desvincularFormaPagamento(@PathVariable Long restauranteId, @PathVariable Long formaPagamentoId) {
+	public ResponseEntity<Void> desvincularFormaPagamento(@PathVariable Long restauranteId, @PathVariable Long formaPagamentoId) {
 		restauranteService.desvincularFormaPagamento(restauranteId, formaPagamentoId);
+		
+		return ResponseEntity.noContent().build();
 	}
 
 }

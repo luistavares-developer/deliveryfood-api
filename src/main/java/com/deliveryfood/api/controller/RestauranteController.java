@@ -117,7 +117,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 	}
 
 	@PutMapping("/{restauranteId}/fechamento")
-	public ResponseEntity<Void> fechamento(@PathVariable Long restauranteId) {
+	public ResponseEntity<Void> fechar(@PathVariable Long restauranteId) {
 		restauranteService.fechar(restauranteId);
 		
 		return ResponseEntity.noContent().build();
