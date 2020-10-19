@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.Links;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -15,7 +17,10 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.deliveryfood.api.exceptionhandler.model.Problem;
+import com.deliveryfood.api.model.CidadeModel;
 import com.deliveryfood.api.model.PedidoResumoModel;
+import com.deliveryfood.api.openapi.model.CidadesModelOpenApi;
+import com.deliveryfood.api.openapi.model.LinksModelOpenApi;
 import com.deliveryfood.api.openapi.model.PageableModelOpenApi;
 import com.deliveryfood.api.openapi.model.PedidosResumoModelOpenApi;
 import com.fasterxml.classmate.TypeResolver;
@@ -57,9 +62,13 @@ public class OpenApiConfig implements WebMvcConfigurer{
 				.additionalModels(typeResolver.resolve(Problem.class))
 				.ignoredParameterTypes(ServletWebRequest.class)
 				.directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
+				.directModelSubstitute(Links.class, LinksModelOpenApi.class)
 	            .alternateTypeRules(AlternateTypeRules.newRule(
 	                    typeResolver.resolve(Page.class, PedidoResumoModel.class),
 	                    PedidosResumoModelOpenApi.class))
+	            .alternateTypeRules(AlternateTypeRules.newRule(
+	                    typeResolver.resolve(CollectionModel.class, CidadeModel.class),
+	                    CidadesModelOpenApi.class))
 				.apiInfo(apiInfo())
 				.tags(new Tag("Cidades", "Gerencia as cidades"),
 				      new Tag("Grupos", "Gerencia os grupos de usuários"),
