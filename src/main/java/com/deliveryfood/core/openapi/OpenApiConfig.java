@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Links;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -18,11 +19,27 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.deliveryfood.api.exceptionhandler.model.Problem;
 import com.deliveryfood.api.model.CidadeModel;
+import com.deliveryfood.api.model.CozinhaModel;
+import com.deliveryfood.api.model.EstadoModel;
+import com.deliveryfood.api.model.FormaPagamentoModel;
+import com.deliveryfood.api.model.GrupoModel;
 import com.deliveryfood.api.model.PedidoResumoModel;
+import com.deliveryfood.api.model.PermissaoModel;
+import com.deliveryfood.api.model.ProdutoModel;
+import com.deliveryfood.api.model.RestauranteBasicoModel;
+import com.deliveryfood.api.model.UsuarioModel;
 import com.deliveryfood.api.openapi.model.CidadesModelOpenApi;
+import com.deliveryfood.api.openapi.model.CozinhasModelOpenApi;
+import com.deliveryfood.api.openapi.model.EstadosModelOpenApi;
+import com.deliveryfood.api.openapi.model.FormasPagamentoModelOpenApi;
+import com.deliveryfood.api.openapi.model.GruposModelOpenApi;
 import com.deliveryfood.api.openapi.model.LinksModelOpenApi;
 import com.deliveryfood.api.openapi.model.PageableModelOpenApi;
 import com.deliveryfood.api.openapi.model.PedidosResumoModelOpenApi;
+import com.deliveryfood.api.openapi.model.PermissoesModelOpenApi;
+import com.deliveryfood.api.openapi.model.ProdutosModelOpenApi;
+import com.deliveryfood.api.openapi.model.RestaurantesBasicoModelOpenApi;
+import com.deliveryfood.api.openapi.model.UsuariosModelOpenApi;
 import com.fasterxml.classmate.TypeResolver;
 
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
@@ -63,6 +80,33 @@ public class OpenApiConfig implements WebMvcConfigurer{
 				.ignoredParameterTypes(ServletWebRequest.class)
 				.directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
 				.directModelSubstitute(Links.class, LinksModelOpenApi.class)
+				.alternateTypeRules(AlternateTypeRules.newRule(
+					    typeResolver.resolve(CollectionModel.class, RestauranteBasicoModel.class),
+					    RestaurantesBasicoModelOpenApi.class))
+				.alternateTypeRules(AlternateTypeRules.newRule(
+						typeResolver.resolve(CollectionModel.class, UsuarioModel.class),
+						UsuariosModelOpenApi.class))
+				.alternateTypeRules(AlternateTypeRules.newRule(
+					    typeResolver.resolve(CollectionModel.class, ProdutoModel.class),
+					    ProdutosModelOpenApi.class))
+				.alternateTypeRules(AlternateTypeRules.newRule(
+					    typeResolver.resolve(PagedModel.class, PedidoResumoModel.class),
+					    PedidosResumoModelOpenApi.class))
+				.alternateTypeRules(AlternateTypeRules.newRule(
+					    typeResolver.resolve(CollectionModel.class, GrupoModel.class),
+					    GruposModelOpenApi.class))
+				.alternateTypeRules(AlternateTypeRules.newRule(
+					    typeResolver.resolve(CollectionModel.class, PermissaoModel.class),
+					    PermissoesModelOpenApi.class))
+				.alternateTypeRules(AlternateTypeRules.newRule(
+					    typeResolver.resolve(CollectionModel.class, FormaPagamentoModel.class),
+					    FormasPagamentoModelOpenApi.class))
+				.alternateTypeRules(AlternateTypeRules.newRule(
+				        typeResolver.resolve(CollectionModel.class, EstadoModel.class),
+				        EstadosModelOpenApi.class))
+				.alternateTypeRules(AlternateTypeRules.newRule(
+						typeResolver.resolve(PagedModel.class, CozinhaModel.class),
+						CozinhasModelOpenApi.class))
 	            .alternateTypeRules(AlternateTypeRules.newRule(
 	                    typeResolver.resolve(Page.class, PedidoResumoModel.class),
 	                    PedidosResumoModelOpenApi.class))
